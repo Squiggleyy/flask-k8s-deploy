@@ -1,0 +1,8 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+
+images:
+  - name: flask-app:latest #squiggleyy/flask-app:latest
+    newName: squiggleyy/flask-app #squiggleyy/flask-app    :latest  # Placeholder to be replaced by the script
+    newTag: latest
