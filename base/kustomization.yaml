@@ -4,5 +4,5 @@ resources:
 
 images:
   - name: flask-app:latest #squiggleyy/flask-app:latest
-    newName: squiggleyy/flask-app #squiggleyy/flask-app    :latest  # Placeholder to be replaced by the script
+    newName: PLACEHOLDER_IMAGE #squiggleyy/flask-app    :latest  # Placeholder to be replaced by the script
     newTag: latest
