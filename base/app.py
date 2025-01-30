@@ -3,25 +3,36 @@ import random
 import requests
 
 # Import OpenTelemetry libraries:
-# from opentelemetry.instrumentation.flask import FlaskInstrumentor
-# from opentelemetry.sdk.trace import TracerProvider
-# from opentelemetry.sdk.trace.export import BatchSpanProcessor
-# from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+import logging
 
+# Set up logging to debug OpenTelemetry
+logging.basicConfig(level=logging.DEBUG)
+
+# ✅ Step 1: Set up Tracer Provider
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer(__name__)
+
+# ✅ Step 2: Set up OTLP Exporter to send traces to Observe Agent (OTel Collector)
+otlp_exporter = OTLPSpanExporter(endpoint="http://observe-agent-node-logs-metrics.observe.svc.cluster.local:4317")
+
+# ✅ Step 3: Add the Span Processor
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
+
+# ✅ Step 4: Initialize Flask App
 app = Flask(__name__)
 
-# Configures OpenTelemetry Tracing!
-# provider = TracerProvider()
-# processor = BatchSpanProcessor(OTLPSpanExporter(endpoint="http://otel-collector:4317"))
-# provider.add_span_processor(processor)
-# FlaskInstrumentor().instrument_app(app)
-##################################
-
-app = Flask(__name__)
+# ✅ Step 5: Instrument Flask for OpenTelemetry
+FlaskInstrumentor().instrument_app(app)
 
 @app.route('/')
 def home():
-    return render_template('main.html')
+    with tracer.start_as_current_span("home-span"): # Example span instrumentation
+        return render_template('main.html')
 
 @app.route('/about')
 def about():

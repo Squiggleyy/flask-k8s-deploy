@@ -1,0 +1,59 @@
+agent:
+  config:
+    nodeLogsMetrics:
+      # This config specifies both a new receiver and exporter and sets up a new traces pipeline with them
+      receivers:
+        otlp/app-telemetry:
+          protocols:
+            grpc:
+              endpoint: ${env:MY_POD_IP}:4317
+            http:
+              endpoint: ${env:MY_POD_IP}:4318
+      processors:
+        attributes/debug_source_app_traces:
+          actions:
+          - action: insert
+            key: debug_source
+            value: app_traces
+        attributes/debug_source_app_logs:
+          actions:
+          - action: insert
+            key: debug_source
+            value: app_logs
+        attributes/debug_source_app_metrics:
+          actions:
+          - action: insert
+            key: debug_source
+            value: app_metrics
+      exporters:
+        otlphttp/observe-traces:
+          # (ex: https://123456789012.collect.observeinc.com/v2/otel)
+          endpoint: "http://100112502756.collect.observeinc.com/v2/otel"
+          headers:
+            # (ex: Bearer a1b2c3d4e5f6g7h8i9k0:l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6)
+            authorization: "Bearer ds1TpVy1LcPmaXmnzd8I:174XloS1LL3mLwClI8_6n0AFOigagIjC"
+      service:
+        pipelines:
+          traces/observe-forward:
+            receivers: [otlp/app-telemetry]
+            processors: [memory_limiter, k8sattributes, batch, resourcedetection/cloud, resource/observe_common, attributes/debug_source_app_traces]
+            exporters: [otlphttp/observe-traces]
+          logs/observe-forward:
+            receivers: [otlp/app-telemetry]
+            processors: [memory_limiter, k8sattributes, batch, resourcedetection/cloud, resource/observe_common, attributes/debug_source_app_logs]
+            exporters: [otlphttp/observe/base]
+          metrics/observe-forward:
+            receivers: [otlp/app-telemetry]
+            processors: [memory_limiter, k8sattributes, batch, resourcedetection/cloud, resource/observe_common, attributes/debug_source_app_metrics]
+            exporters: [prometheusremotewrite]
+node-logs-metrics:
+  service:
+    enabled: true
+    type: ClusterIP
+  networkPolicy:
+    enabled: true
+
+node:
+  containers:
+    logs:
+      include: '["/var/log/pods/*/*/*.log", "/var/log/pods/*/*/*.log.*", "/var/log/kube-apiserver-audit.log", "/var/log/test/*"]'
