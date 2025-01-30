@@ -48,6 +48,7 @@ function check_docker() {
 function cleanup_deployment() {
   echo "Checking for existing deployment and services..."
   kubectl delete deployment $APP_NAME service $APP_NAME --ignore-not-found
+  docker system prune --all --force
 }
 
 # Build and push Docker image
@@ -69,25 +70,14 @@ function deploy_application() {
   echo "APP_NAME: $APP_NAME"
   echo "DOCKER_IMAGE: $DOCKER_IMAGE"
 
-  #cd $OVERLAY_DIR
-  #$APP_NAME=$DOCKER_IMAGE
-  #echo "New APP_NAME: $APP_NAME"
   cd ./base || exit 1
-  #kustomize edit set image $APP_NAME=$DOCKER_IMAGE
-  #kustomize edit set image $APP_NAME
   echo "Current directory: $(pwd)"
-  #sed -i '' "s|PLACEHOLDER_IMAGE|$DOCKER_IMAGE|g" kustomization.yaml
   sed -i '' "s|PLACEHOLDER_IMAGE|$DOCKER_IMAGE|g" kustomization.yaml
 
   new_name=$(yq '.images[] | select(.name == "flask-app:latest").newName' kustomization.yaml)
   echo "The current image newName is: $new_name"
 
-  #kustomize edit set image squiggleyy/flask-app:latest
-  #$APP_NAME=$DOCKER_IMAGE
-  #echo "New APP_NAME: $APP_NAME"
   cd - >/dev/null
-
-  #docker login
 
   echo "Deploying $CLUSTER_TYPE overlay with Kustomize via directory $OVERLAY_DIR ..."
   kubectl apply -k $OVERLAY_DIR
@@ -109,37 +99,6 @@ function start_port_forwarding() {
 function open_browser() {
   echo "Please open http://127.0.0.1:5000 manually in an incognito window."
 }
-
-# Open the browser
-# function open_browser() {
-#   if [[ "$CLUSTER_TYPE" == "minikube" ]]; then
-#     echo "Opening browser to http://127.0.0.1:5000 in incognito mode"
-    
-#     # Check if Google Chrome is installed
-#     if command -v google-chrome >/dev/null 2>&1; then
-#       google-chrome --incognito http://127.0.0.1:5000
-#     elif command -v chrome >/dev/null 2>&1; then
-#       chrome --incognito http://127.0.0.1:5000
-#     elif command -v open >/dev/null 2>&1; then
-#       # macOS fallback: Use open command with Chrome in incognito
-#       open -a "Google Chrome" --args --incognito http://127.0.0.1:5000
-#     else
-#       echo "Please open http://127.0.0.1:5000 manually in an incognito window."
-#     fi
-#   else
-#     echo "For non-Minikube clusters, access the app via the external IP or LoadBalancer."
-#   fi
-# }
-
-# Open the browser
-# function open_browser() {
-#   if [[ "$CLUSTER_TYPE" == "minikube" ]]; then
-#     echo "Opening browser to http://127.0.0.1:5000"
-#     open http://127.0.0.1:5000 || xdg-open http://127.0.0.1:5000 || echo "Please open http://127.0.0.1:5000 manually."
-#   else
-#     echo "For non-Minikube clusters, access the app via the external IP or LoadBalancer."
-#   fi
-# }
 
 # Main execution
 check_docker
