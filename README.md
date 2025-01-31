@@ -5,25 +5,27 @@ This is a basic Flask web application that can be used to practice the instrumen
 
 If you are reading this on GitHub, you'll need to clone the repository with "git clone https://github.com/squiggleyy/flask-observability-exercise". Once the repo is available on your local machine, complete the following steps:
 
+# Start the app
+1. Navigate to the "~/flask-observability-exercise" directory and run the "deploy-app.sh" script via "sh deploy-app.sh".
+2. You should be prompted for your DockerHub username. Type your username and click enter.
+3. After the script completes, run "kubectl get pods" to confirm that there is a flask-app pod running in the default namespace.
+4. Open the application by visiting "http://localhost:5000" in a browser. If it doesn't load, try incognito mode.
+5. Interact with the web application to see what it does!
+
+*Now, let's get ready to collect telemetry...*
+
 # Update Observe Helm chart to point to your Observe trial
-1. Create a free trial in Observe if you haven't already done so. Log into Observe in the browser.
-2. Go to "Add Data" in the left toolbar. Click "Kubernetes" under the section "Observe Agent."
-3. Click "Install" and copy the ingest token. Navigate to deploy-observe.sh in your terminal or IDE and substitute the existing "observe-token.value" token with your new Kubernetes Exlorer ingest token.
-4. Update the Observe tenant endpoint to reflect your own Observe instance, as shown in your URL bar.
-5. Save your changes to the file.
+6. Create a free trial in Observe if you haven't already done so. Log into Observe in the browser.
+7. Go to "Add Data" in the left toolbar. Click "Kubernetes" under the section "Observe Agent."
+8. Click "Install" and copy the ingest token. Navigate to "deploy-observe.sh" in your terminal or IDE and substitute the existing "observe-token.value" token with your new Kubernetes Exlorer ingest token.
+9. Update the Observe tenant endpoint to reflect your own Observe instance, as shown in your URL bar.
+10. Save your changes to the file.
 
 # Update Helm values file to point to your Observe trial
-6. Go to "Applications" in the left toolbar of the Observe platform. Click on the OpenTelemetry data app tile and install it.
-7. Generate your own OpenTelemetry ingest token and copy it. Navigate to "observe-values.yaml" in your terminal or IDE and update the existing Bearer token with your new OpenTelemetry ingest token.
-8. Update the traces exporter endpoint to reflect your own Observe instance, as shown in your URL bar.
-9. Save your changes to the file.
-
-# Start the app
-10. Navigate to the "~/flask-observability-exercise" directory and run the "deploy-app.sh" script via "sh deploy-app.sh".
-11. You should be prompted for your DockerHub username. Type your username and click enter.
-12. After the script completes, run "kubectl get pods" to confirm that there is a flask-app pod running in the default namespace.
-13. Open the application by visiting "http://localhost:5000" in a browser. If it doesn't load, try incognito mode.
-14. Interact with the web application to see what it does!
+11. Go to "Applications" in the left toolbar of the Observe platform. Click on the OpenTelemetry data app tile and install it.
+12. Generate your own OpenTelemetry ingest token and copy it. Navigate to "observe-values.yaml" in your terminal or IDE and update the existing Bearer token with your new OpenTelemetry ingest token.
+13. Update the traces exporter endpoint to reflect your own Observe instance, as shown in your URL bar.
+14. Save your changes to the file.
 
 # Instrument the app with the Observe Agent
 15. Navigate to the "~/observe-deployment" folder and run the "deploy-observe.sh" script via "sh deploy-observe.sh".
