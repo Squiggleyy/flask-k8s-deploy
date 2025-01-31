@@ -1,6 +1,4 @@
-!/bin/bash
-
-# deploy the observe agent helm chart. You will need to update the ENDPOINT and TOKEN below!
+# Deploy the observe agent helm chart. You will need to update the ENDPOINT and TOKEN below!
 helm install observe-agent observe/agent \
   --version 0.32.0 \
   --create-namespace \

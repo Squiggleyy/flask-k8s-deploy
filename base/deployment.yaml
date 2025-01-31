@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: PLACEHOLDER_IMAGE # This will be replaced by the script
+        image: squiggleyy/flask-app:latest # This will be replaced by the script - squiggleyy/flask-app:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
