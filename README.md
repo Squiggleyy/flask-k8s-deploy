@@ -3,7 +3,7 @@ This is a basic Flask web application that can be used to practice the instrumen
 
 **As of 2025, Docker Desktop and Minikube must be installed to proceed with this exercise!**
 
-If you are reading this on GitHub, you'll need to clone the repository with "git clone https://github.com/squiggleyy/flask-observability-exercise". Once the repo is available on your local machine, complete the following steps:
+If you haven't already, clone the repository with "git clone https://github.com/squiggleyy/flask-observability-exercise". Once the repo is available on your local machine, complete the following steps:
 
 # Start the app
 1. Navigate to the "~/flask-observability-exercise" directory and run the "deploy-app.sh" script via "sh deploy-app.sh".
